@@ -1,10 +1,8 @@
 "use strict";
 let StepNC = require('../../../../../STEPNode/build/Release/StepNC');
-let fs = require("fs");
-//Query for a json file that maps all projects in the data directory
-//to a particular path in the data folder
+let fs = require('fs');
+let pth = require('path');
 
-let path;
 let find;
 let apt;
 let tol;
@@ -24,8 +22,15 @@ function init(path, machinetool){
 		else
 			console.log("Loaded Machine Successfully")
 	}
-	this.find.OpenProject(path);
-	this.apt.OpenProject(path);
+	var ext = pth.extname(path);
+	if(ext === '.stpnc'){
+		this.find.OpenProject(path);
+		this.apt.OpenProject(path);
+	}
+	else if(ext === '.stp'){
+		this.apt.OpenSTEP(path);
+		this.find.OpenProject(path);
+	}
 	return;
 }
 
