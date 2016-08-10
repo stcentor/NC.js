@@ -5,6 +5,7 @@
  */
 
 import request from 'superagent';
+let _ = require('lodash');
 
 /*********************************************************************
  *
@@ -626,13 +627,34 @@ function processPreviewJSON(url, workerID, data) {
     });
 }
 
-function processNCState(url, workerID, data) {
+function processNCState(url, workerID, data, fileType) {
     // All we really need to do is pass this back to the main thread
     //FINDME
+    let dataParsed = data;
+    if(fileType === 'stp'){
+        dataParsed = JSON.parse(data);
+        dataParsed.geom = _.map(dataParsed.geom, (geom) => {
+            let newGeom = geom;
+            if(_.has(geom,'shell')){
+                newGeom.id = geom.id + 'mesh';
+                let uuid = newGeom.shell.split('.');
+                uuid[0] = uuid[0] + 'mesh';
+                uuid = uuid.join();
+            }
+            else if(_.has(geom,'polyline')){
+                newGeom.id = geom.id + 'poly';
+                let uuid = newGeom.polyline.split('.');
+                uuid[0] = uuid[0] + 'poly';
+                uuid = uuid.join();
+            }
+            return newGeom;
+        });
+        dataParsed = JSON.stringify(dataParsed);
+    }
     self.postMessage({
         type: "rootLoad",
         url: url,
-        data: data,
+        data: dataParsed,
         workerID: workerID
     });
 }
@@ -781,6 +803,7 @@ let messageHandler = function(e) {
     // Determine data type
     let parts = url.split('.');
     let dataType = e.data.dataType;
+    let fileType = e.data.fileType;
     parts = url.split("/");
     
     // define a callback for the "load" event
@@ -840,7 +863,7 @@ let messageHandler = function(e) {
                 }
                 break;
             case "nc":
-                processNCState(url, workerID, res.text);
+                processNCState(url, workerID, res.text, fileType);
                 break;
             case "assembly":
                 processAssembly(url, workerID, res.text);

@@ -10,7 +10,6 @@ import Product             from './product';
 import Shape               from './shape';
 import Shell               from './shell';
 import Annotation          from './annotation';
-let _           = require('lodash');
 
 /********************************* Helper Functions ********************************/
 
@@ -190,9 +189,6 @@ export default class DataLoader extends THREE.EventDispatcher {
                     this.buildAssemblyJSON(event.data.data, req);
                 } else if (req.type === 'nc') {
                     // Handle the nc file
-                    console.log('i made it in here');
-                    console.log(event.data.data);
-                    _.each(JSON.parse(event.data.data).geom, (geom) => {geom.id = geom.id + 'mesh'})
                     this.buildNCStateJSON(event.data.data, req);
                 }
                 break;
