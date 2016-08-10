@@ -125,6 +125,7 @@ APIServer.prototype._setSite = function() {
     socket: '',
     version: '/v3',
     machine: self.machinetool,
+    fileType: self.fileType,
   };
   // Serve the root client framework - customized as needed
   var _serveRoot = function (req, res) {

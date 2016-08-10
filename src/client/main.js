@@ -54,13 +54,24 @@ class CADApp extends THREE.EventDispatcher {
         // Dispatch setModel to the CADManager
       }
     );
-    this.cadManager.dispatchEvent({
-      type: 'setModel',
-      viewType: 'cadjs',
-      path: 'state/key',
-      baseURL: this.services.apiEndpoint + this.services.version,
-      modelType: 'nc',
-    });
+    if(this.services.fileType === 'stpnc'){
+      this.cadManager.dispatchEvent({
+        type: 'setModel',
+        viewType: 'cadjs',
+        path: 'state/key',
+        baseURL: this.services.apiEndpoint + this.services.version,
+        modelType: 'nc',
+      });
+    }
+    /*else if(this.services.fileType === 'stp'){
+      this.cadManager.dispatchEvent({
+        type: 'setModel',
+        viewType: 'cadjs',
+        path: '',
+        baseURL: this.services.apiEndpoint + this.services.version,
+        modelType: 'nc',
+      });
+    }*/
   }
 }
 

@@ -78,7 +78,7 @@ function CoreServer() {
       this.project = opts.file;
   else
       this.project = this.config.file.dir;
-  file.init(this.project, this.machinetool);
+  this.fileType = file.init(this.project, this.machinetool);
 
   // Establish core
   this.models = {};

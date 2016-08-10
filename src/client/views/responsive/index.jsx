@@ -11,6 +11,9 @@ export default class ResponsiveView extends React.Component {
     super(props);
 
     let tempGuiMode = 1;
+    let stp = 0;
+
+    console.log(this);
 
     let innerWidth = window.innerWidth;
     let innerHeight = window.innerHeight;
@@ -48,16 +51,21 @@ export default class ResponsiveView extends React.Component {
       spindleSpeed: 0,
     };
 
+    this.addBindings();
+    this.addListeners();
+
     // get the workplan
-    this.getWorkPlan = this.getWorkPlan.bind(this);
     request.get('/v3/nc/workplan/').end(this.getWorkPlan);
 
     // get the project loopstate
-    this.getLoopState = this.getLoopState.bind(this);
-    request.get('/v3/nc/state/loop/').end(this.getLoopState);
+    if(this.props.app.services.fileType === 'stpnc'){
+      this.getLoopState = this.getLoopState.bind(this);
+      request.get('/v3/nc/state/loop/').end(this.getLoopState);
+    }
+
+    request.get('/v3/nc/mainwp').end(this.getWorkpiece);
 
     // get the cache of tools
-    this.getToolCache = this.getToolCache.bind(this);
     request.get('/v3/nc/tools/').end(this.getToolCache);
 
     // get the current tool
@@ -68,11 +76,17 @@ export default class ResponsiveView extends React.Component {
     });
 
     // get data for workpiece/tolerance view
-    this.getWPT = this.getWPT.bind(this);
     request.get('/v3/nc/workpieces/').end(this.getWPT);
+  }
 
-    this.addBindings();
-    this.addListeners();
+  getProductGeom(err, res){
+    console.log(res.text);
+  }
+
+  getWorkpiece(err, res){
+    let arr = JSON.parse(res.text);
+    let id = arr[0]; 
+    request.get('/v3/nc/geometry/' + id).end(this.getProductGeom);
   }
 
   getWorkPlan(err, res) {
@@ -228,6 +242,12 @@ export default class ResponsiveView extends React.Component {
     this.openPreview = this.openPreview.bind(this);
 
     this.toggleHighlight = this.toggleHighlight.bind(this);
+
+    this.getWorkPlan = this.getWorkPlan.bind(this);
+    this.getWorkpiece = this.getWorkpiece.bind(this);
+    this.getToolCache = this.getToolCache.bind(this);
+    this.getWPT = this.getWPT.bind(this);
+    this.getProductGeom = this.getProductGeom.bind(this);
   }
 
   addListeners() {

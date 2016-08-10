@@ -1,6 +1,7 @@
 'use strict';
 let StepNC = require('../../../../../STEPNode/build/Release/StepNode');
 let fs = require('fs');
+let pth = require('path');
 
 function init(path, machinetool) {
   fs.accessSync(path, fs.R_OK , () => process.exit());
@@ -8,17 +9,30 @@ function init(path, machinetool) {
   this.find = new StepNC.Finder();
   this.tol = new StepNC.Tolerance();
 
-  this.apt.OpenProject(path);
-  this.find.OpenProject(path);
+	var ext = pth.extname(path);
+	if(ext === '.stpnc'){
+		this.apt.OpenProject(path);
+		this.ms = new StepNC.machineState(path);
+		this.find.OpenProject(path);
 
-	this.ms = new StepNC.machineState(path);
-	if(machinetool !== null){
-		if(!this.ms.LoadMachine(machinetool))
-			console.log("ERROR: Machinetool was not loaded");
-		else
-			console.log("Loaded Machine Successfully")
+		//this.ms = new StepNC.machineState(path);
+		if(machinetool !== null){
+			if(!this.ms.LoadMachine(machinetool))
+				console.log("ERROR: Machinetool was not loaded");
+			else
+				console.log("Loaded Machine Successfully")
+		}
+		return 'stpnc';
 	}
-	return;
+	else if(ext === '.stp'){
+		this.apt.OpenProject(path);
+		this.ms = new StepNC.machineState(path);
+		this.find.OpenProject(path);
+		return 'stp'
+	}
+	else{
+		return 'Unknown File Type';
+	}
 }
 
 module.exports.init = init;
