@@ -33,13 +33,13 @@ export default class CADManager extends THREE.EventDispatcher {
         // Default the model type to assembly
         req.type = req.modelType ? req.modelType : 'assembly';
         delete req.modelType;
-        console.log(req);
         // Load the model
         this._loader.load(req, (err, model) => {
             if (err) {
                 console.log('CADManager.load error: ' + err);
             } else {
                 // Add the model to the list of loaded models
+                console.log(model);
                 this._models[req.path] = model;
                 this.dispatchEvent({
                     type: 'model:add',

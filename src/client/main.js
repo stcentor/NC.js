@@ -64,11 +64,10 @@ class CADApp extends THREE.EventDispatcher {
       });
     }
     else if(this.services.fileType === 'stp'){
-
       this.cadManager.dispatchEvent({
         type: 'setModel',
         viewType: 'cadjs',
-        path: 'mainwp',
+        path: 'stpinit',
         baseURL: this.services.apiEndpoint + this.services.version,
         modelType: 'nc',
       });

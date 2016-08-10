@@ -59,10 +59,6 @@ export default class ResponsiveView extends React.Component {
       request.get('/v3/nc/state/loop/').end(this.getLoopState);
     }
 
-    if(this.props.app.services.fileType === 'stp'){
-      request.get('/v3/nc/mainwp').end(this.getWorkpiece);
-    }
-
     // get the cache of tools
     request.get('/v3/nc/tools/').end(this.getToolCache);
 
@@ -75,10 +71,6 @@ export default class ResponsiveView extends React.Component {
 
     // get data for workpiece/tolerance view
     request.get('/v3/nc/workpieces/').end(this.getWPT);
-  }
-
-  getWorkpiece(err, res){
-    console.log(res.text);
   }
 
   getWorkPlan(err, res) {
@@ -235,7 +227,6 @@ export default class ResponsiveView extends React.Component {
     this.toggleHighlight = this.toggleHighlight.bind(this);
 
     this.getWorkPlan = this.getWorkPlan.bind(this);
-    this.getWorkpiece = this.getWorkpiece.bind(this);
     this.getToolCache = this.getToolCache.bind(this);
     this.getWPT = this.getWPT.bind(this);
   }

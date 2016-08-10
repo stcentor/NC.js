@@ -87,6 +87,7 @@ export default class NC extends THREE.EventDispatcher {
                     obj.rendered = false;
                     obj.setInvisible();
                 }
+                console.log(model);
             });
         } else if (type === 'polyline') {
             model.addEventListener('annotationEndLoad', (event) => {
@@ -103,6 +104,7 @@ export default class NC extends THREE.EventDispatcher {
                     obj.annotation3D.add(lines);
                     model._addedGeometry.push(lines);
                 }
+                                console.log(model);
             });
             model.addEventListener("annotationMakeVisible", (event)=>{
               _.each(model._addedGeometry, (line)=>{

@@ -126,7 +126,6 @@ export default class DataLoader extends THREE.EventDispatcher {
      */
     addRequest(req, callback) {
         req.callback = callback;
-        console.log(req);
         // Push onto the queue and send out a message
         this._queue.push(req);
         if (req.type === 'previewShell') {
@@ -207,7 +206,6 @@ export default class DataLoader extends THREE.EventDispatcher {
                 this.buildPreviewNCJSON(event.data.data, req);
                 break;
             case "shellLoad":
-            //This is the case where the shell comes in with position, normals and colors vector after ProcessShellJSON
                 shell = this._shells[event.data.id+".json"];
 
                 if (!shell) {
@@ -250,10 +248,15 @@ export default class DataLoader extends THREE.EventDispatcher {
             type: req.type,
             dataType: req.dataType ? req.dataType : 'json'
         };
-        
         if (data.type === "shell") {
             data.shellSize = req.shellSize;
-            let newpath = (req.baseURL).split('state')[0];
+            let newpath = 0;
+            if(this._app.services.fileType === 'stpnc'){
+                newpath = (req.baseURL).split('state')[0];
+            }
+            else if(this._app.services.fileType === 'stp'){
+                newpath = (req.baseURL).split('stpinit')[0];
+            }
             if(newpath[newpath.length - 1] === '/')
                 newpath = newpath.substring(0 , newpath.length - 1);
 
@@ -273,7 +276,13 @@ export default class DataLoader extends THREE.EventDispatcher {
             data.url = newpath + '/geometry/' + req.path;
         }
         else if (data.type === "annotation") {
-            let newpath = (req.baseURL).split('state')[0];
+            let newpath = 0;
+            if(this._app.services.fileType === 'stpnc'){
+                newpath = (req.baseURL).split('state')[0];
+            }
+            else if(this._app.services.fileType === 'stp'){
+                newpath = (req.baseURL).split('stpinit')[0];
+            }
             if(newpath[newpath.length - 1] === '/')
                 newpath = newpath.substring(0 , newpath.length - 1);
             data.url = newpath + '/geometry/' + req.path + '/' + req.type;
@@ -360,6 +369,7 @@ export default class DataLoader extends THREE.EventDispatcher {
     }
     //This is the initial load that then loads all shells below it
     buildNCStateJSON(jsonText, req) {
+        //console.log(jsonText);
         let doc = JSON.parse(jsonText);
         //console.log('Process NC: ' + doc.project);
         let nc = new NC(doc.project, doc.workingstep, doc.time_in_workingstep, this);
@@ -368,12 +378,16 @@ export default class DataLoader extends THREE.EventDispatcher {
             let transform = DataLoader.parseXform(geomData.xform, true);
             // Is this a shell
             if (_.has(geomData, 'shell')) {
+                //console.log(geomData);
                 if(geomData.usage === 'cutter')
                 {
                     color = DataLoader.parseColor("FF530D");
                 }
                 if(geomData.usage === 'fixture' && this._app.services.machine === null){
                     return;
+                }
+                if (!geomData.usage) {
+                    geomData.usage = 'tobe';
                 }
                 let boundingBox = DataLoader.parseBoundingBox(geomData.bbox);
                 let shell = new Shell(geomData.id, nc, nc, geomData.size, color, boundingBox);
@@ -387,6 +401,10 @@ export default class DataLoader extends THREE.EventDispatcher {
                 });
             // Is this a polyline
             } else if (_.has(geomData, 'polyline')) {
+                //console.log(geomData);
+                if (!geomData.usage) {
+                    geomData.usage = 'annotation';
+                }
                 let annotation = new Annotation(geomData.id, nc, nc);
                 nc.addModel(annotation, geomData.usage, 'polyline', geomData.id, transform, undefined);
                 // Push the annotation for later completion

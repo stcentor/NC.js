@@ -22,16 +22,16 @@ function init(path, machinetool) {
 			else
 				console.log("Loaded Machine Successfully")
 		}
-		return 'stpnc';
+		this.fileT = 'stpnc';
 	}
 	else if(ext === '.stp'){
 		this.apt.OpenProject(path);
 		this.ms = new StepNC.machineState(path);
 		this.find.OpenProject(path);
-		return 'stp'
+		this.fileT = 'stp';
 	}
 	else{
-		return 'Unknown File Type';
+		this.fileT = 'Unknown File Type';
 	}
 }
 
@@ -40,3 +40,4 @@ module.exports.find = this.find;
 module.exports.apt = this.apt;
 module.exports.tol = this.tol;
 module.exports.ms = this.ms;
+module.exports.fileT = this.fileT;
