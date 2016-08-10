@@ -59,6 +59,7 @@ export default class NC extends THREE.EventDispatcher {
             toggleCollapsed: function() { },
             explode: function() { }
         };
+        console.log(bbox);
         obj.object3D.applyMatrix(obj.transform);
         obj.object3D.updateMatrixWorld();
         obj.overlay3D = obj.object3D.clone();
