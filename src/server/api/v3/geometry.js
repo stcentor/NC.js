@@ -1,5 +1,6 @@
 'use strict';
 var file = require('./file');
+var _ = require('lodash');
 
 /***************************** Endpoint Functions *****************************/
 
@@ -16,6 +17,19 @@ function _getGeometry(req, res) {
   } else if (req.params.type === 'tool') {
     let toolId = find.GetToolWorkpiece(Number(req.params.id));
     res.status(200).send(find.GetJSONProduct(toolId)); // toolId));
+    return;
+  } else if (req.params.type === 'ws') {
+    let tobe = find.GetExecutableWorkpieceAsIs(Number(req.params.id));
+    tobe = JSON.parse(find.GetJSONProduct(tobe));
+    let asis = find.GetExecutableWorkpieceToBe(Number(req.params.id));
+    asis = JSON.parse(find.GetJSONProduct(asis));
+    let delta = find.GetExecutableWorkpieceRemoval(Number(req.params.id));
+    delta = JSON.parse(find.GetJSONProduct(delta));
+
+    let json = tobe;
+    json.geom = _.concat(json.geom, asis.geom, delta.geom);
+
+    res.status(200).send(JSON.stringify(json));
     return;
   } else if (!req.params.type && req.params.eid) {
     if (!isNaN(Number(req.params.eid)) && isFinite(Number(req.params.eid))) {

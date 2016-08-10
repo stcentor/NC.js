@@ -127,15 +127,15 @@ export default class PropertiesPane extends React.Component {
 
       this.setState({'previewEntity': entity});
       this.props.previewCb(true);
-      let prevId;
+      let prevId = entity.id;
+      let modelType = 'previewShell';
+
       if (entity.type === 'workingstep') {
-        prevId = entity.toBe.id;
+        prevId = entity.id + '/ws';
       } else if (entity.type === 'tolerance') {
         prevId = entity.workpiece;
       } else if (entity.type === 'tool') {
         prevId = entity.id + '/tool';
-      } else {
-        prevId = entity.id;
       }
 
       let url = this.props.manager.app.services.apiEndpoint
@@ -145,7 +145,7 @@ export default class PropertiesPane extends React.Component {
         viewType: 'preview',
         path: prevId.toString(),
         baseURL: url,
-        modelType: 'previewShell',
+        modelType: modelType,
       });
     }
     // some other menu item clicked, no need to do anything
@@ -324,7 +324,7 @@ export default class PropertiesPane extends React.Component {
 
   renderPreviewButton(entity) {
     if (entity.type === 'workplan' || entity.type === 'selective' ||
-        entity.type === 'workplan-setup' || entity.type === 'workingstep') {
+        entity.type === 'workplan-setup') {
       return;
     }
 

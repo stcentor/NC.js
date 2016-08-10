@@ -797,7 +797,7 @@ let messageHandler = function(e) {
                 break;
             case "previewShell":
                 file = parts.slice(-1).join('/');
-                if (file === 'tool') {
+                if (file === 'tool' || file === 'ws') {
                     file = parts.slice(-2).join('/');
                 }
                 file = 'preview-' + file;
