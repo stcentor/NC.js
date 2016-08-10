@@ -11,10 +11,6 @@ export default class ResponsiveView extends React.Component {
     super(props);
 
     let tempGuiMode = 1;
-    let stp = 0;
-
-    console.log(this);
-
     let innerWidth = window.innerWidth;
     let innerHeight = window.innerHeight;
     if ((innerWidth - 390 > innerHeight) && (innerWidth > 800)) {
@@ -63,7 +59,9 @@ export default class ResponsiveView extends React.Component {
       request.get('/v3/nc/state/loop/').end(this.getLoopState);
     }
 
-    request.get('/v3/nc/mainwp').end(this.getWorkpiece);
+    if(this.props.app.services.fileType === 'stp'){
+      request.get('/v3/nc/mainwp').end(this.getWorkpiece);
+    }
 
     // get the cache of tools
     request.get('/v3/nc/tools/').end(this.getToolCache);
@@ -79,14 +77,8 @@ export default class ResponsiveView extends React.Component {
     request.get('/v3/nc/workpieces/').end(this.getWPT);
   }
 
-  getProductGeom(err, res){
-    console.log(res.text);
-  }
-
   getWorkpiece(err, res){
-    let arr = JSON.parse(res.text);
-    let id = arr[0]; 
-    request.get('/v3/nc/geometry/' + id).end(this.getProductGeom);
+    console.log(res.text);
   }
 
   getWorkPlan(err, res) {
@@ -246,7 +238,6 @@ export default class ResponsiveView extends React.Component {
     this.getWorkpiece = this.getWorkpiece.bind(this);
     this.getToolCache = this.getToolCache.bind(this);
     this.getWPT = this.getWPT.bind(this);
-    this.getProductGeom = this.getProductGeom.bind(this);
   }
 
   addListeners() {

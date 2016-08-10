@@ -15,7 +15,7 @@ function _getGeometry(req, res) {
     return;
   } else if (req.params.type === 'tool') {
     let toolId = find.GetToolWorkpiece(Number(req.params.id));
-    res.status(200).send(find.GetJSONProduct(toolId)); // toolId));
+    res.status(200).send(find.GetJSONProduct(toolId));
     return;
   } else if (!req.params.type && req.params.eid) {
     if (!isNaN(Number(req.params.eid)) && isFinite(Number(req.params.eid))) {
@@ -30,12 +30,9 @@ function _getGeometry(req, res) {
 }
 
 function _getMainWorkpiece(req, res){
-  res.status(200).send(JSON.stringify(find.GetWorkpieceAll()));
-}
-
-function _getProductGeom(req, res){
-  if(req.params.eid !== undefined){
-    res.status(200).send(JSON.stringify(find.GetJSONProduct(Number(req.params.eid))));
+  let wps = find.GetWorkpieceAll();
+  for(let wp in wps){
+    res.status(200).send(JSON.stringify(find.GetJSONProduct(wps[wp])));
   }
 }
 
