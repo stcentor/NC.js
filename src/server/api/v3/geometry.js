@@ -21,10 +21,13 @@ function _getGeometry(req, res) {
   } else if (req.params.type === 'ws') {
     let tobe = find.GetExecutableWorkpieceAsIs(Number(req.params.id));
     tobe = JSON.parse(find.GetJSONProduct(tobe));
+    tobe.geom.usage='tobe';
     let asis = find.GetExecutableWorkpieceToBe(Number(req.params.id));
     asis = JSON.parse(find.GetJSONProduct(asis));
+    asis.geom.usage='asis';
     let delta = find.GetExecutableWorkpieceRemoval(Number(req.params.id));
     delta = JSON.parse(find.GetJSONProduct(delta));
+    delta.geom.usage='delta';
 
     let json = tobe;
     json.geom = _.concat(json.geom, asis.geom, delta.geom);
