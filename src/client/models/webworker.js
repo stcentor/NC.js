@@ -628,6 +628,7 @@ function processPreviewJSON(url, workerID, data) {
 
 function processNCState(url, workerID, data) {
     // All we really need to do is pass this back to the main thread
+    //FINDME
     self.postMessage({
         type: "rootLoad",
         url: url,

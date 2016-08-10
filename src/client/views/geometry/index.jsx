@@ -236,6 +236,8 @@ export default class GeometryView extends React.Component {
     this.annotationScene.add(model.getAnnotation3D());
     this.geometryScene.add(model.getObject3D());
     this.overlayScene.add(model.getOverlay3D());
+
+    console.log(model.getBoundingBox());
     // calculate the scene's radius for draw distance calculations
     this.updateSceneBoundingBox(model.getBoundingBox());
 

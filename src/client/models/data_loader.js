@@ -10,6 +10,7 @@ import Product             from './product';
 import Shape               from './shape';
 import Shell               from './shell';
 import Annotation          from './annotation';
+let _           = require('lodash');
 
 /********************************* Helper Functions ********************************/
 
@@ -189,6 +190,9 @@ export default class DataLoader extends THREE.EventDispatcher {
                     this.buildAssemblyJSON(event.data.data, req);
                 } else if (req.type === 'nc') {
                     // Handle the nc file
+                    console.log('i made it in here');
+                    console.log(event.data.data);
+                    _.each(JSON.parse(event.data.data).geom, (geom) => {geom.id = geom.id + 'mesh'})
                     this.buildNCStateJSON(event.data.data, req);
                 }
                 break;
@@ -246,7 +250,8 @@ export default class DataLoader extends THREE.EventDispatcher {
             url: req.baseURL + '/' + req.type + '/' + req.path,
             workerID: req.workerID,
             type: req.type,
-            dataType: req.dataType ? req.dataType : 'json'
+            dataType: req.dataType ? req.dataType : 'json',
+            fileType: this._app.services.fileType,
         };
         if (data.type === "shell") {
             data.shellSize = req.shellSize;
@@ -369,7 +374,7 @@ export default class DataLoader extends THREE.EventDispatcher {
     }
     //This is the initial load that then loads all shells below it
     buildNCStateJSON(jsonText, req) {
-        //console.log(jsonText);
+        console.log(jsonText);
         let doc = JSON.parse(jsonText);
         //console.log('Process NC: ' + doc.project);
         let nc = new NC(doc.project, doc.workingstep, doc.time_in_workingstep, this);
