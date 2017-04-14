@@ -460,6 +460,14 @@ export default class WorkingstepProperties extends React.Component{
   }
   render(){
     let entity = this.props.entity;
+    let toleranceMap = (tolids) =>{
+      let obj ={};
+      obj.children ={};
+      _.each(tolids,(tolid)=>{
+            obj.children.push(this.props.toleranceCache[tolid]);
+      });
+      return obj;
+    };
     return(
       <div>
         <RunmodeItem active={this.props.curws===entity.id} enabled={entity.enabled}/>
