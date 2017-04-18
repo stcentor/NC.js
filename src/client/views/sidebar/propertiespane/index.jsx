@@ -321,14 +321,50 @@ DatumList.propTypes = {
   selectEntity: React.PropTypes.func.isRequired
 }
 
+export default class WorkpieceItem extends React.Component{
+  constructor(props)
+  {
+    super(props);
+  }
+  render(){
+    //draw
+    return(
+      <div>
+      <span id= {this.props.workpiece.id} className ='node'>
+        <span className={getIcon('workpiece')}/>
+        <span className='textbox'>
+          {this.props.workpiece.name}
+        </span>
+        <span className={getIcon('preview')}/>
+      </span>
+      </div>
+  }
+}
+WorkpieceItem.propTypes={
+      workpiece: React.PropTypes.object.isRequired
+  //Add these
+}
+
 export default class WorkpieceList extends React.Component{
   constructor(props){
     super(props);
   }
   render(){
-    return null;
+    return(
+      <li className='rc-menu-item-disabled property children'>
+        <div className='title'>Workpieces:</div>
+        <div className='list'>
+        </div>
+        <div>To-Be: <WorkpieceItem workpiece = {this.props.tobe} /></div>
+        <div>As-Is: <WorkpieceItem workpiece = {this.props.asis}/></div>
+      </li>
+     );
   }
 }
+  WorkpieceList.propTypes={
+    asis:React.PropTypes.Object.isRequired,
+    tobe:React.PropTypes.Object.isRequired
+  }
 
 export default class WorkpieceProperties extends React.Component{
   constructor(props){
@@ -486,7 +522,10 @@ export default class WorkingstepProperties extends React.Component{
           toggleHighlight={this.props.toggleHighlight} 
           selectEntity={this.props.selectEntity}
         />
-        <WorkpieceList />
+        <WorkpieceList 
+          asis={this.props.toleranceCache[entity.asIs.id]}
+          tobe={this.props.toleranceCache[entity.toBe.id]}
+          />
       </div>
     );
   }
